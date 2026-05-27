@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Marks API Demo</title>
+
+    <style>
+        :root {
+            --bg: #f5efe4;
+            --surface: rgba(255, 255, 255, 0.78);
+            --surface-strong: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --line: rgba(148, 163, 184, 0.28);
+            --brand: #0f766e;
+            --brand-dark: #115e59;
+            --accent: #f59e0b;
+            --danger: #b91c1c;
+            --danger-soft: #fee2e2;
+            --success: #166534;
+            --success-soft: #dcfce7;
+            --shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+            --radius-lg: 24px;
+            --radius-md: 18px;
+            --radius-sm: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(245, 158, 11, 0.22), transparent 28%),
+                radial-gradient(circle at top right, rgba(15, 118, 110, 0.18), transparent 26%),
+                linear-gradient(160deg, #fcfaf6 0%, #f3eee3 44%, #efe8da 100%);
+            padding: 32px 18px 48px;
+        }
+
+        .container {
+            max-width: 1160px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            display: grid;
+            gap: 18px;
+            padding: 32px;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 248, 235, 0.88));
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: auto -80px -80px auto;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(15, 118, 110, 0.16), transparent 68%);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(15, 118, 110, 0.1);
+            color: var(--brand-dark);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        h1,
+        h2,
+        h3,
+        p {
+            margin: 0;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 4vw, 3.4rem);
+            line-height: 1.05;
+            max-width: 960px;
+        }
+
+        .hero p {
+            max-width: 700px;
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .layout {
+            display: grid;
+            gap: 24px;
+            min-width: 0;
+        }
+
+        .card {
+            width: 100%;
+            min-width: 0;
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.72);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .card-header p {
+            color: var(--muted);
+            margin-top: 6px;
+            line-height: 1.6;
+        }
+
+        .badge {
+            flex-shrink: 0;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, 0.14);
+            color: #9a6700;
+            font-weight: 700;
+            font-size: 0.82rem;
+        }
+
+        .token-box,
+        pre {
+            margin-top: 14px;
+            padding: 16px 18px;
+            border-radius: var(--radius-md);
+            background: #112031;
+            color: #f8fafc;
+            overflow-x: auto;
+        }
+
+        .inline-code {
+            margin-top: 14px;
+            padding: 16px 18px;
+            border-radius: var(--radius-md);
+            background: #112031;
+            color: #f8fafc;
+            font-family: Consolas, "Courier New", monospace;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .search-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 16px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.96);
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus {
+            border-color: rgba(15, 118, 110, 0.7);
+            box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
+        }
+
+        button {
+            border: none;
+            border-radius: 14px;
+            padding: 14px 18px;
+            background: linear-gradient(135deg, var(--brand), #14b8a6);
+            color: white;
+            font-size: 0.98rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+            box-shadow: 0 14px 24px rgba(15, 118, 110, 0.22);
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .button-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .button-row button {
+            box-shadow: none;
+        }
+
+        .page-pill {
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.06);
+            font-weight: 600;
+        }
+
+        .student-shell {
+            display: grid;
+            gap: 18px;
+        }
+
+        .marks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 14px;
+        }
+
+        .mark-card {
+            padding: 16px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .mark-card-label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .mark-card-value {
+            display: block;
+            color: var(--text);
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .compact-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(140px, 0.7fr) auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .field-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        .field-group label {
+            color: var(--muted);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .student-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+        }
+
+        .stat {
+            padding: 16px;
+            border-radius: var(--radius-md);
+            background: rgba(248, 250, 252, 0.92);
+            border: 1px solid rgba(226, 232, 240, 0.92);
+        }
+
+        .stat-label {
+            display: block;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .table-wrap {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: var(--surface-strong);
+            scrollbar-gutter: stable both-edges;
+        }
+
+        table {
+            width: max-content;
+            min-width: max-content;
+            border-collapse: collapse;
+        }
+
+        .table-wrap::-webkit-scrollbar {
+            height: 12px;
+        }
+
+        .table-wrap::-webkit-scrollbar-track {
+            background: #e5e7eb;
+            border-radius: 999px;
+        }
+
+        .table-wrap::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 999px;
+        }
+
+        .table-wrap::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        th,
+        td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+        }
+
+        th {
+            background: #f8fafc;
+            font-size: 0.82rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        tbody tr:hover {
+            background: rgba(15, 118, 110, 0.04);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-box {
+            margin-top: 12px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-weight: 600;
+        }
+
+        .error {
+            color: var(--danger);
+            background: var(--danger-soft);
+            border: 1px solid rgba(248, 113, 113, 0.32);
+        }
+
+        .success {
+            color: var(--success);
+            background: var(--success-soft);
+            border: 1px solid rgba(74, 222, 128, 0.34);
+        }
+
+        .loading {
+            color: var(--brand-dark);
+            background: rgba(204, 251, 241, 0.9);
+            border: 1px solid rgba(45, 212, 191, 0.35);
+        }
+
+        .muted-text {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 18px 14px 32px;
+            }
+
+            .hero,
+            .card {
+                padding: 20px;
+                border-radius: 22px;
+            }
+
+            .card-header {
+                flex-direction: column;
+            }
+
+            .search-row {
+                grid-template-columns: 1fr;
+            }
+
+            .compact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .button-row {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            .page-pill {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <section class="hero">
+            <span class="eyebrow">Marks Dashboard</span>
+            <h1>Student Marksheet - REST API Demo</h1>
+            <p>
+                This demo uses a token-protected REST API, supports pagination, and rate limiting.
+            </p>
+        </section>
+
+        <div class="layout">
+            <section class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>Authentication Token</h2>
+                        <p>Use this bearer token when calling protected student endpoints.</p>
+                    </div>
+                    <span class="badge">Secure Access</span>
+                </div>
+
+                <div class="token-box">mysecrettoken</div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>Fetch Student By Enrolment</h2>
+                        <p>Enter an enrolment number and click search to load profile details and all subject marks.</p>
+                    </div>
+                    <span class="badge">Live Search</span>
+                </div>
+
+                <div class="search-row">
+                    <input type="text" id="enrolment" placeholder="Enter enrolment number" />
+                    <button onclick="getStudent()">Search Marks</button>
+                </div>
+
+                <div id="studentResult"></div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>Pagination Demo</h2>
+                        <p>Browse the dataset page by page and preview key marks without loading everything at once.</p>
+                    </div>
+                    <span class="badge">Page View</span>
+                </div>
+
+                <div class="button-row">
+                    <button onclick="previousPage()">Previous</button>
+                    <span class="page-pill" id="pageNumber">Page: 1</span>
+                    <button onclick="nextPage()">Next</button>
+                </div>
+
+                <div class="table-wrap" style="margin-top: 18px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Enrolment</th>
+                                <th>Roll</th>
+                                <th>Name</th>
+                                <th>Branch</th>
+                                <th>Division</th>
+                                <th>PST1</th>
+                                <th>PST2</th>
+                                <th>PST3</th>
+                                <th>PST4</th>
+                                <th>FSD1T1</th>
+                                <th>FSD1T2</th>
+                                <th>FSD1T3</th>
+                                <th>FSD1T4</th>
+                                <th>DET1</th>
+                                <th>DET2</th>
+                                <th>DET3</th>
+                                <th>DET4</th>
+                                <th>PYTHON1T1</th>
+                                <th>PYTHON1T2</th>
+                                <th>PYTHON1T3</th>
+                                <th>PYTHON1T4</th>
+                                <th>ETCT4</th>
+                                <th>CIT4</th>
+                                <th>MOOC</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="studentTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>Request Headers Demonstration</h2>
+                        <p>Run a live request and inspect the exact headers sent to the protected student endpoint.</p>
+                    </div>
+                    <span class="badge">Headers</span>
+                </div>
+
+                <div class="search-row">
+                    <input type="text" id="headerEnrolment" placeholder="Enter enrolment number for header demo" />
+                    <button onclick="demoHeaders()">Test Headers</button>
+                </div>
+
+                <div class="inline-code" id="headerPreview">Authorization: Bearer mysecrettoken
+Content-Type: application/json</div>
+
+                <div id="headerResult"></div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>Rate Limiting Demo</h2>
+                        <p>Choose a student and burst size, then watch when the API starts blocking repeated requests.</p>
+                    </div>
+                    <span class="badge">Traffic Test</span>
+                </div>
+
+                <div class="compact-grid">
+                    <div class="field-group">
+                        <label for="rateLimitEnrolment">Enrolment Number</label>
+                        <input type="text" id="rateLimitEnrolment" placeholder="Enter enrolment number for rate-limit test" />
+                    </div>
+                    <div class="field-group">
+                        <label for="rateLimitCount">Requests</label>
+                        <input type="number" id="rateLimitCount" min="1" max="100" value="10" />
+                    </div>
+                    <button onclick="spamRequests()">Run Demo</button>
+                </div>
+
+                <div id="rateLimitResult"></div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = "http://192.168.107.215:8000";
+        const TOKEN = "mysecrettoken";
+        const LIMIT = 5;
+        let currentPage = 1;
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function formatSubjectLabel(subject) {
+            return subject
+                .replace(/([a-z])([A-Z])/g, "$1 $2")
+                .trim();
+        }
+
+        function renderStatus(message, type) {
+            return `<div class="status-box ${type}">${message}</div>`;
+        }
+
+        function renderStudent(data) {
+            const marks = Object.entries(data.marks || {});
+            const markCards = marks.map(([subject, value]) => `
+                <div class="mark-card">
+                    <span class="mark-card-label">${escapeHtml(formatSubjectLabel(subject))}</span>
+                    <span class="mark-card-value">${escapeHtml(value)}</span>
+                </div>
+            `).join("");
+
+            return `
+                <div class="student-shell">
+                    <div class="student-meta">
+                        <div class="stat">
+                            <span class="stat-label">Student</span>
+                            <span class="stat-value">${escapeHtml(data.name)}</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Enrolment</span>
+                            <span class="stat-value">${escapeHtml(data.enrolment)}</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Branch</span>
+                            <span class="stat-value">${escapeHtml(data.branch)}</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Division</span>
+                            <span class="stat-value">${escapeHtml(data.division)}</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Roll No.</span>
+                            <span class="stat-value">${escapeHtml(data.roll)}</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Subjects Tracked</span>
+                            <span class="stat-value">${marks.length}</span>
+                        </div>
+                    </div>
+
+                    <div class="marks-grid">
+                        ${markCards}
+                    </div>
+                </div>
+            `;
+        }
+
+        async function getStudent() {
+            const resultBox = document.getElementById("studentResult");
+            const enrolment = document.getElementById("enrolment").value.trim();
+
+            if (!enrolment) {
+                resultBox.innerHTML = renderStatus("Please enter an enrolment number to search.", "error");
+                return;
+            }
+
+            resultBox.innerHTML = renderStatus("Fetching student details and marks...", "loading");
+
+            try {
+                const response = await fetch(`${BASE_URL}/students/${enrolment}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${TOKEN}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                if (response.status === 429) {
+                    resultBox.innerHTML = renderStatus("Too many requests. Please wait a moment and try again.", "error");
+                    return;
+                }
+
+                if (response.status === 401) {
+                    resultBox.innerHTML = renderStatus("Invalid token. Authenticated request failed.", "error");
+                    return;
+                }
+
+                if (response.status === 404) {
+                    resultBox.innerHTML = renderStatus("Student not found for the entered enrolment number.", "error");
+                    return;
+                }
+
+                if (!response.ok) {
+                    resultBox.innerHTML = renderStatus("Unable to fetch the student record right now.", "error");
+                    return;
+                }
+
+                const data = await response.json();
+                resultBox.innerHTML = renderStudent(data);
+            } catch (error) {
+                resultBox.innerHTML = renderStatus("API request failed. Make sure the FastAPI server is running.", "error");
+            }
+        }
+
+        async function loadStudents() {
+            try {
+                const response = await fetch(`${BASE_URL}/students?page=${currentPage}&limit=${LIMIT}`);
+
+                if (response.status === 429) {
+                    document.getElementById("studentTable").innerHTML = `
+                        <tr>
+                            <td colspan="24" class="muted-text">Too many requests. Please wait a moment before loading more pages.</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                if (!response.ok) {
+                    document.getElementById("studentTable").innerHTML = `
+                        <tr>
+                            <td colspan="24" class="muted-text">Unable to load student list.</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                const result = await response.json();
+                const students = result.data;
+
+                let html = "";
+
+                students.forEach(student => {
+                    html += `
+                        <tr>
+                            <td>${escapeHtml(student.enrolment)}</td>
+                            <td>${escapeHtml(student.roll)}</td>
+                            <td>${escapeHtml(student.name)}</td>
+                            <td>${escapeHtml(student.branch)}</td>
+                            <td>${escapeHtml(student.division)}</td>
+                            <td>${escapeHtml(student.pst1)}</td>
+                            <td>${escapeHtml(student.pst2)}</td>
+                            <td>${escapeHtml(student.pst3)}</td>
+                            <td>${escapeHtml(student.pst4)}</td>
+                            <td>${escapeHtml(student.fsd1t1)}</td>
+                            <td>${escapeHtml(student.fsd1t2)}</td>
+                            <td>${escapeHtml(student.fsd1t3)}</td>
+                            <td>${escapeHtml(student.fsd1t4)}</td>
+                            <td>${escapeHtml(student.det1)}</td>
+                            <td>${escapeHtml(student.det2)}</td>
+                            <td>${escapeHtml(student.det3)}</td>
+                            <td>${escapeHtml(student.det4)}</td>
+                            <td>${escapeHtml(student.python1t1)}</td>
+                            <td>${escapeHtml(student.python1t2)}</td>
+                            <td>${escapeHtml(student.python1t3)}</td>
+                            <td>${escapeHtml(student.python1t4)}</td>
+                            <td>${escapeHtml(student.etct4)}</td>
+                            <td>${escapeHtml(student.cit4)}</td>
+                            <td>${escapeHtml(student.mooc)}</td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById("studentTable").innerHTML = html;
+                document.getElementById("pageNumber").innerText = `Page: ${currentPage}`;
+            } catch (error) {
+                document.getElementById("studentTable").innerHTML = `
+                    <tr>
+                        <td colspan="24" class="muted-text">API request failed while loading pagination data.</td>
+                    </tr>
+                `;
+            }
+        }
+
+        function nextPage() {
+            currentPage++;
+            loadStudents();
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                loadStudents();
+            }
+        }
+
+        async function demoHeaders() {
+            const enrolmentInput = document.getElementById("headerEnrolment");
+            const resultBox = document.getElementById("headerResult");
+            const previewBox = document.getElementById("headerPreview");
+            const enrolment = enrolmentInput.value.trim();
+
+            if (!enrolment) {
+                resultBox.innerHTML = renderStatus("Enter an enrolment number to run the header demonstration.", "error");
+                return;
+            }
+
+            const headersToSend = {
+                "Authorization": `Bearer ${TOKEN}`,
+                "Content-Type": "application/json"
+            };
+
+            previewBox.textContent = `GET ${BASE_URL}/students/${enrolment}
+Authorization: ${headersToSend.Authorization}
+Content-Type: ${headersToSend["Content-Type"]}`;
+
+            resultBox.innerHTML = renderStatus("Sending authenticated request with headers...", "loading");
+
+            try {
+                const response = await fetch(`${BASE_URL}/students/${enrolment}`, {
+                    method: "GET",
+                    headers: headersToSend
+                });
+
+                let responseMessage = `Response status: ${response.status}`;
+
+                if (response.ok) {
+                    const student = await response.json();
+                    responseMessage += `<br>Authenticated successfully for <strong>${escapeHtml(student.name)}</strong>.`;
+                } else if (response.status === 401) {
+                    responseMessage += "<br>Authorization header was rejected by the API.";
+                } else if (response.status === 404) {
+                    responseMessage += "<br>Headers were accepted, but the enrolment number was not found.";
+                } else if (response.status === 429) {
+                    responseMessage += "<br>Headers were sent, but the request hit the rate limit.";
+                } else {
+                    responseMessage += "<br>The server returned an unexpected response.";
+                }
+
+                resultBox.innerHTML = renderStatus(responseMessage, response.ok ? "success" : "loading");
+            } catch (error) {
+                resultBox.innerHTML = renderStatus("Header demo failed. Make sure the FastAPI server is running.", "error");
+            }
+        }
+
+        async function spamRequests() {
+            const enrolment = document.getElementById("rateLimitEnrolment").value.trim();
+            const requestCount = Number(document.getElementById("rateLimitCount").value);
+            const resultBox = document.getElementById("rateLimitResult");
+
+            if (!enrolment) {
+                resultBox.innerHTML = renderStatus("Enter an enrolment number before starting the rate-limit demo.", "error");
+                return;
+            }
+
+            if (!Number.isFinite(requestCount) || requestCount < 1 || requestCount > 100) {
+                resultBox.innerHTML = renderStatus("Choose a request count between 1 and 100.", "error");
+                return;
+            }
+
+            const output = [];
+            resultBox.innerHTML = renderStatus("Sending repeated requests to demonstrate the API rate limit...", "loading");
+
+            for (let i = 1; i <= requestCount; i++) {
+                try {
+                    const response = await fetch(`${BASE_URL}/students/${enrolment}`, {
+                        headers: {
+                            "Authorization": `Bearer ${TOKEN}`
+                        }
+                    });
+
+                    let note = "";
+
+                    if (response.status === 200) {
+                        note = "Allowed";
+                    } else if (response.status === 429) {
+                        note = "Rate limit exceeded";
+                    } else if (response.status === 404) {
+                        note = "Student not found";
+                    } else if (response.status === 401) {
+                        note = "Auth failed";
+                    }
+
+                    output.push(`Request ${i}: Status ${response.status}${note ? ` - ${note}` : ""}`);
+                } catch (error) {
+                    output.push(`Request ${i}: Failed`);
+                }
+            }
+
+            const hitLimit = output.some(line => line.includes("429"));
+            resultBox.innerHTML = `
+                <div class="status-box ${hitLimit ? "error" : "success"}">${output.join("<br>")}</div>
+            `;
+        }
+
+        loadStudents();
+    </script>
+
+</body>
+
+</html>
